@@ -8,10 +8,10 @@ var postCounter = 0;
 
 var restify = require('restify')
 
-  // Get a persistence engine for the users
+  // This is to get a persistence engine for the images
   , imagesSave = require('save')('images')
 
-  // Create the restify server
+  // The below method is going to create the restify server
   , server = restify.createServer({ name: SERVER_NAME})
 
   server.listen(PORT, HOST, function () {
@@ -21,13 +21,11 @@ var restify = require('restify')
 })
 
 server
-  // Allow the use of POST
   .use(restify.fullResponse())
 
-  // Maps req.body to req.params so there is no switching between them
   .use(restify.bodyParser())
 
-// Get all users in the system
+// Get all images present in the system
 server.get('/images', function (req, res, next) {
   console.log('> images GET: received request')
   
@@ -36,7 +34,7 @@ server.get('/images', function (req, res, next) {
   // Find every entity within the given collection
   imagesSave.find({}, function (error, images) {
 
-    // Return all of the users in the system
+    // Returns all of the images in the system
     res.send(images)
     console.log(' < images GET: sending response')
   })
@@ -45,27 +43,30 @@ server.get('/images', function (req, res, next) {
 })
 
 
-// Create a new user
+// Create a new image
 server.post('/images', function (req, res, next) {
   console.log(' > images POST: received request')
   postCounter++;
   
   if (req.params.imageId === undefined ) {
     // If there are any errors, pass them to next in the correct format
-    return next(new restify.InvalidArgumentError('image must be supplied'))
+    return next(new restify.InvalidArgumentError('imageId must be supplied'))
   }
-  // Make sure name is defined
+
+  // To define the name
   if (req.params.name === undefined ) {
     // If there are any errors, pass them to next in the correct format
     return next(new restify.InvalidArgumentError('name must be supplied'))
   }
+
   if (req.params.url === undefined ) {
     // If there are any errors, pass them to next in the correct format
-    return next(new restify.InvalidArgumentError('age must be supplied'))
+    return next(new restify.InvalidArgumentError('url must be supplied'))
   }
+
   if (req.params.size === undefined ) {
     // If there are any errors, pass them to next in the correct format
-    return next(new restify.InvalidArgumentError('name must be supplied'))
+    return next(new restify.InvalidArgumentError('size must be supplied'))
   }
 
   var newImage = {
@@ -75,13 +76,13 @@ server.post('/images', function (req, res, next) {
     size: req.params.size
 	}
 
-  // Create the user using the persistence engine
+  // Create the image using the persistence engine
   imagesSave.create( newImage, function (error, image) {
 
     // If there are any errors, pass them to next in the correct format
     if (error) return next(new restify.InvalidArgumentError(JSON.stringify(error.errors)))
 
-    // Send the user if no issues
+    // Send the image if there are no issues
     res.send(201, image)
     console.log(' < images POST: sending response')
   })
@@ -90,16 +91,16 @@ server.post('/images', function (req, res, next) {
 })
 
 
-// Delete user with the given id
+// Delete the image with the given Image id
 server.del('/images', function (req, res, next) {
 
-  // Delete the user with the persistence engine
+  // Delete the image with the persistence engine
   imagesSave.deleteMany({}, function (error, user) {
 
     // If there are any errors, pass them to next in the correct format
     if (error) return next(new restify.InvalidArgumentError(JSON.stringify(error.errors)))
 
-    // Send a 200 OK response
+    // Send a response
     res.send()
   })
 })
