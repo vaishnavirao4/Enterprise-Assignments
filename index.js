@@ -2,6 +2,9 @@ var SERVER_NAME = 'image-api'
 var PORT = 5000;
 var HOST = '127.0.0.1';
 
+var getCounter = 0;
+var postCounter = 0;
+
 
 var restify = require('restify')
 
@@ -26,6 +29,7 @@ server
 
 // Get all users in the system
 server.get('/images', function (req, res, next) {
+  getCounter++;
 
   // Find every entity within the given collection
   imagesSave.find({}, function (error, images) {
@@ -33,11 +37,14 @@ server.get('/images', function (req, res, next) {
     // Return all of the users in the system
     res.send(images)
   })
+  console.log('Processed Request Count--> GET: %s, POST: %s',getCounter,postCounter)
+
 })
 
 
 // Create a new user
 server.post('/images', function (req, res, next) {
+  postCounter++;
   
   if (req.params.imageId === undefined ) {
     // If there are any errors, pass them to next in the correct format
@@ -73,6 +80,8 @@ server.post('/images', function (req, res, next) {
     // Send the user if no issues
     res.send(201, image)
   })
+  console.log('Processed Request Count--> GET: %s, POST: %s',getCounter,postCounter)
+
 })
 
 
