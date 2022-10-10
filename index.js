@@ -29,6 +29,8 @@ server
 
 // Get all users in the system
 server.get('/images', function (req, res, next) {
+  console.log('> images GET: received request')
+  
   getCounter++;
 
   // Find every entity within the given collection
@@ -36,6 +38,7 @@ server.get('/images', function (req, res, next) {
 
     // Return all of the users in the system
     res.send(images)
+    console.log(' < images GET: sending response')
   })
   console.log('Processed Request Count--> GET: %s, POST: %s',getCounter,postCounter)
 
@@ -44,6 +47,7 @@ server.get('/images', function (req, res, next) {
 
 // Create a new user
 server.post('/images', function (req, res, next) {
+  console.log(' > images POST: received request')
   postCounter++;
   
   if (req.params.imageId === undefined ) {
@@ -79,6 +83,7 @@ server.post('/images', function (req, res, next) {
 
     // Send the user if no issues
     res.send(201, image)
+    console.log(' < images POST: sending response')
   })
   console.log('Processed Request Count--> GET: %s, POST: %s',getCounter,postCounter)
 
